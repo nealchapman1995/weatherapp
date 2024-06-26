@@ -11,3 +11,52 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.dayContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+  justify-content: center;
+  padding: 20px;
+}
+
+@media (max-width: 1118px) {
+  .dayContainer {
+      flex-direction: column; /* Switch to column layout on smaller screens */
+      align-items: center;
+  }
+}
+
+.daybox {
+  padding: 10px;
+  flex: 1;
+  width: 12%;
+  min-width: 120px;
+  border-radius: 5%;
+  transition: .5s;
+  padding: 2px;
+  height: 300px;
+}
+
+.daybox:hover {
+  box-shadow: 5px 5px 5px grey;
+  background-color: bisque;
+  transition: .5s;
+  border: 1px solid black;
+}
+
+.citySelector {
+  font-size: 30px;
+}
+
+#citySelect {
+  height: 40px;
+  font-size: 20px;
+}
+
+.tempContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
