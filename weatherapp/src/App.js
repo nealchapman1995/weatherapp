@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import DetailedView from './detailedView';
 const apiKey = process.env.REACT_APP_API_KEY;
+
 
 function App() {
   const [data, setData] = useState(null);
   const [selectedCity, setSelectedCity] = useState('Denver');
+  const [selectedDay, setSelectedDay] = useState(null); // Track selected day
 
   useEffect(() => {
     fetchWeatherData(selectedCity);
@@ -22,13 +25,25 @@ function App() {
 
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
+    setSelectedDay(null);
+  };
+
+  const handleDayClick = (dayData) => {
+    const filteredData = data.list.filter(item => {
+      const date = new Date(item.dt * 1000).toLocaleDateString();
+      return date == dayData.date;
+    });
+    setSelectedDay({...dayData, details: filteredData});
+    
+  };
+
+  const handleCloseDetailedView = () => {
+    setSelectedDay(null);
   };
 
   if (!data) {
     return <p>Loading...</p>;
   }
-
-  const city = data.city.name;
 
   const groupedData = data.list.reduce((acc, item) => {
     const date = new Date(item.dt * 1000).toLocaleDateString();
@@ -68,10 +83,11 @@ function App() {
 
       <div className='dayContainer'>
       {dates.map((item, index) => (
-        <div className='daybox'>
+        <div className='daybox' onClick={() => handleDayClick(item)}>
         <h5>{item.date}</h5>
         <div className='tempContainer'>
         <div >
+
         <h5 className='tempBox'>highest temp!</h5>
         <p>{item.temp_max} Degrees F</p>
         </div>
@@ -81,9 +97,12 @@ function App() {
         </div>
         </div>
         <p>Rain Probability: {item.averagePop}%</p>
-        
+
         </div>
       ))}
+       <div>
+         {selectedDay && <DetailedView data={selectedDay} onClose={handleCloseDetailedView} />}
+      </div>
       </div>
     </div>
   );
