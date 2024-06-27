@@ -10,9 +10,9 @@ const DetailedView = ({data, onClose}) => {
             <h2>{data.date}</h2>
             {data.details.map((item, index) => (
                 <div key={index}>
-                    <p>Time: {new Date(item.dt * 1000).toLocaleTimeString()}</p>
-                    <p>Temperature: {item.main.feels_like}°F</p>
-                    <p>Rain Probability: {item.pop * 100}%</p>
+                    <p>{new Date(item.dt * 1000).toLocaleTimeString()}</p>
+                    <p>Will Feel Like {item.main.feels_like}°F</p>
+                    <p>Probability of Percipitation: {item.pop * 100}%</p>
                     <p>Weather: {item.weather[0].description}</p>
                     <p><img src={`http://openweathermap.org/img/wn/${item.weather[0].icon}.png`} alt="weather icon" /></p>
                 </div>
