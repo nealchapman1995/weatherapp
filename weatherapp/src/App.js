@@ -89,11 +89,11 @@ function App() {
         <div >
 
         <h5 className='tempBox'>highest temp!</h5>
-        <p>{item.temp_max} Degrees F</p>
+        <p>{item.temp_max}°F</p>
         </div>
         <div >
         <h5 className='tempBox'>Lowest temp!</h5>
-        <p>{item.temp_min} Degrees F</p>
+        <p>{item.temp_min}°F</p>
         </div>
         </div>
         <p>Rain Probability: {item.averagePop}%</p>
