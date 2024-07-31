@@ -6,6 +6,7 @@ const apiKey = process.env.REACT_APP_API_KEY;
 function App() {
   const [data, setData] = useState(null);
   const [selectedCity, setSelectedCity] = useState('Denver');
+  const [inputCity, setInputCity] = useState('Denver'); // State to manage input value
   const [selectedDay, setSelectedDay] = useState(null); // Track selected day
 
   useEffect(() => {
@@ -22,8 +23,12 @@ function App() {
       .catch(error => console.error('Error fetching data:', error));
   };
 
-  const handleCityChange = (e) => {
-    setSelectedCity(e.target.value);
+  const handleInputChange = (e) => {
+    setInputCity(e.target.value);
+  };
+
+  const handleChangeCity = () => {
+    setSelectedCity(inputCity);
     setSelectedDay(null);
   };
 
@@ -68,12 +73,15 @@ function App() {
     <div className="App">
       <h1>What's the Forecast Looking Like?</h1>
       <div className='citySelector'>
-        <label htmlFor='citySelect'>Pick a City! </label>
-        <select id='citySelect' value={selectedCity} onChange={handleCityChange}>
-          <option value="Denver">Denver</option>
-          <option value="New York">New York</option>
-          <option value="Los Angeles">Los Angeles</option>
-        </select>
+        <label htmlFor='cityInput'>Pick a City! </label>
+        <input 
+          type='text' 
+          id='cityInput' 
+          value={inputCity} 
+          onChange={handleInputChange} 
+          placeholder='Enter city name' 
+        />
+        <button onClick={handleChangeCity}>Change City</button>
       </div>
 
       <div className='dayContainer'>
