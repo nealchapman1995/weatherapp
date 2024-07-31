@@ -8,6 +8,7 @@ function App() {
   const [selectedCity, setSelectedCity] = useState('Denver');
   const [inputCity, setInputCity] = useState('Denver'); // State to manage input value
   const [selectedDay, setSelectedDay] = useState(null); // Track selected day
+  const [error, setError] = useState(''); // State to track error messages
 
   useEffect(() => {
     fetchWeatherData(selectedCity);
@@ -15,12 +16,21 @@ function App() {
 
   const fetchWeatherData = (city) => {
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial`)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('City not found');
+        }
+        return response.json();
+      })
       .then(data => {
         console.log("Data fetched:", data); // Debug log
         setData(data);
+        setError(''); // Clear any previous errors
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        setError('City not found. Please check the spelling and try again.');
+      });
   };
 
   const handleInputChange = (e) => {
@@ -44,11 +54,11 @@ function App() {
     setSelectedDay(null);
   };
 
-  if (!data) {
+  if (!data && !error) {
     return <p>Loading...</p>;
   }
 
-  const groupedData = data.list.reduce((acc, item) => {
+  const groupedData = data?.list.reduce((acc, item) => {
     const date = new Date(item.dt * 1000).toLocaleDateString();
     if (!acc[date]) {
       acc[date] = { count: 0, totalPop: 0, temp_min: item.main.temp_min, temp_max: item.main.temp_max, icon: item.weather[0].icon };
@@ -64,10 +74,10 @@ function App() {
     return acc;
   }, {});
 
-  const dates = Object.keys(groupedData).map(date => {
+  const dates = data ? Object.keys(groupedData).map(date => {
     const averagePop = (groupedData[date].totalPop / groupedData[date].count) * 100;
     return { date, averagePop: averagePop.toFixed(1), temp_min: groupedData[date].temp_min.toFixed(0), temp_max: groupedData[date].temp_max.toFixed(0), icon: groupedData[date].icon };
-  });
+  }) : [];
 
   return (
     <div className="App">
@@ -83,26 +93,27 @@ function App() {
         />
         <button onClick={handleChangeCity}>Change City</button>
       </div>
-
-      <div className='dayContainer'>
-        {dates.map((item, index) => (
-          <div className='dayBox' key={index} onClick={() => handleDayClick(item)}>
-            <h5>{item.date}</h5>
-            <div className='tempContainer'>
-              <div>
-                <h5 className='tempBox'>Highest temp!</h5>
-                <p>{item.temp_max}°F</p>
+      {error && <p className='error'>{error}</p>} {/* Display error message if there is an error */}
+      {data && (
+        <div className='dayContainer'>
+          {dates.map((item, index) => (
+            <div className='dayBox' key={index} onClick={() => handleDayClick(item)}>
+              <h5>{item.date}</h5>
+              <div className='tempContainer'>
+                <div>
+                  <h5 className='tempBox'>Highest temp!</h5>
+                  <p>{item.temp_max}°F</p>
+                </div>
+                <div>
+                  <h5 className='tempBox'>Lowest temp!</h5>
+                  <p>{item.temp_min}°F</p>
+                </div>
               </div>
-              <div>
-                <h5 className='tempBox'>Lowest temp!</h5>
-                <p>{item.temp_min}°F</p>
-              </div>
+              <p>Rain Probability: {item.averagePop}%</p>
             </div>
-            <p>Rain Probability: {item.averagePop}%</p>
-          </div>
-        ))}
-      </div>
-
+          ))}
+        </div>
+      )}
       {selectedDay && (
         <div className='detailedViewContainer'>
           <DetailedView data={selectedDay} onClose={handleCloseDetailedView} />
