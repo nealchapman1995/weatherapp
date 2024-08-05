@@ -79,6 +79,13 @@ function App() {
     return { date, averagePop: averagePop.toFixed(1), temp_min: groupedData[date].temp_min.toFixed(0), temp_max: groupedData[date].temp_max.toFixed(0), icon: groupedData[date].icon };
   }) : [];
 
+  const plants = [
+    {Name: 'Rocky Mountain Maple', rain: 60 }, 
+    {Name: 'Ponderosa Pine', rain: 20}, 
+    {Name: 'Blue Grama', rain: 20}, 
+    {Name: 'Western Wild Rose', rain: 40}
+  ]
+
   return (
     <div className="App">
       <h1>What's the Forecast Looking Like?</h1>
@@ -110,7 +117,24 @@ function App() {
                 </div>
               </div>
               <p>Rain Probability: {item.averagePop}%</p>
+              <table>
+              <thead>
+                <tr>
+                <th>Plant Name</th>
+                <th>Should you Water it?</th>
+                </tr>
+              </thead>
+              <tbody>
+                {plants.map((plant, plantindex) => (
+                  <tr>
+                    <td  className='Plants'>{plant.Name}</td>
+                    <td>{item.averagePop >= plant.rain ? 'No' : 'Yes'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
             </div>
+            
           ))}
         </div>
       )}
