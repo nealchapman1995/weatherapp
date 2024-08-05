@@ -120,7 +120,7 @@ function App() {
               <table>
               <thead>
                 <tr>
-                <th>Plant Name</th>
+                <th className='Plants'>Plant Name</th>
                 <th>Should you Water it?</th>
                 </tr>
               </thead>
